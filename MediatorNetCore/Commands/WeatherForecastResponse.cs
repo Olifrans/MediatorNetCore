@@ -1,6 +1,6 @@
-namespace MediatorNetCore
+namespace MediatorNetCore.Commands
 {
-    public class WeatherForecast
+    public class WeatherForecastResponse
     {
         public DateTime Date { get; set; }
 
