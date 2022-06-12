@@ -1,4 +1,5 @@
 using MediatorNetCore.Commands;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediatorNetCore.Controllers
@@ -7,28 +8,19 @@ namespace MediatorNetCore.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
+        private readonly IMediator _mediator;
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(IMediator mediator, ILogger<WeatherForecastController> logger)
         {
+            _mediator = mediator;
             _logger = logger;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecastResponse> Get()
+        public async Task<IEnumerable<WeatherForecastResponse>> Get([FromQuery] GetWeatherForecastRequest request)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecastResponse
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return await _mediator.Send(request);
         }
     }
 }
